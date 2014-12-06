@@ -57,3 +57,6 @@ css
 *.css.map
 rsync_exclude.txt
 deploy
+js/web.js
+js/bootstrap.js
+js/plugins.js

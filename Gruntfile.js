@@ -45,7 +45,7 @@ module.exports = function (grunt) {
 
     concat: {
       options: {
-        separator: ';'
+        // separator: ';'
       },
       bootstrap: {
         src: [
@@ -63,6 +63,19 @@ module.exports = function (grunt) {
           'js/bootstrap/affix.js'
         ],
         dest: 'js/bootstrap.js'
+      },
+      main: {
+        src: [
+          'js/shared/*.js',
+          'js/web/*.js'
+        ],
+        dest: 'js/web.js'
+      },
+      plugins: {
+        src: [
+          'js/plugins/*.js'
+        ],
+        dest: 'js/plugins.js'
       }
     },
 
@@ -76,14 +89,20 @@ module.exports = function (grunt) {
           jshintrc: 'js/bootstrap/.jshintrc'
         },
         src: 'js/bootstrap/*.js'
+      },
+      grunt: {
+        options: {
+          jshintrc: 'grunt/.jshintrc'
+        },
+        src:'Gruntfile.js'
+      },
+      main: {
+        jshintrc: 'public/js/.jshintrc',
+        src: ['js/shared/*.js', 'js/web/*.js']
+      },
+      afterConcat: {
+        src: ['js/web.js']
       }
-      // },
-      // grunt: {
-      //   options: {
-      //     jshintrc: 'grunt/.jshintrc'
-      //   },
-      //   src:'Gruntfile.js'
-      // }
     },
 
     jscs: {
@@ -92,6 +111,9 @@ module.exports = function (grunt) {
       },
       bootstrap: {
         src: 'js/bootstrap/*.js'
+      },
+      main: {
+        src: ['js/shared/*.js', 'js/web/*.js']
       },
       grunt: {
         src: 'Gruntfile.js'
@@ -259,7 +281,7 @@ module.exports = function (grunt) {
         'concat'
       ],
       options: {
-        logConcurrentOutput: true
+        // logConcurrentOutput: true
       }
     },
 
@@ -281,8 +303,8 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('compress-image', ['imagemin']);
-  grunt.registerTask('dev', ['concurrent:less', 'concurrent:js', 'autoprefixer']);
-  grunt.registerTask('default', ['dev', 'notify:first', 'watch']);
+  grunt.registerTask('dev', ['concurrent:less', 'concurrent:js', 'notify:first', 'autoprefixer','csscomb','cssmin']);
+  grunt.registerTask('default', ['dev', 'watch']);
   grunt.registerTask('production', ['clean:build', 'compress-image', 'less', 'concat', 'autoprefixer', 'csscomb', 'cssmin', 'uglify']);
   grunt.registerTask('heroku', 'dev');
   grunt.registerTask('heroku:development', 'dev');

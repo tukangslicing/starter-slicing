@@ -11,14 +11,11 @@
   "wsh": true, // Windows Scripting Host.
 
   "jquery": true,
-  "ender": true,
   "prototypejs": false,
   "mootools": false,
   "dojo": false,
 
   "predef": [ // Custom globals.
-      "TRS",
-      "_"
   ],
 
   // Development.
@@ -27,7 +24,7 @@
   "camelcase": true,
 
   // ECMAScript 5.
-  "es5": true, // Allow ECMAScript 5 syntax.
+  "es5": false, // Allow ECMAScript 5 syntax.
   "strict": false, // Require `use strict` pragma  in every file.
   "globalstrict": false, // Allow global "use strict" (also enables 'strict').
 

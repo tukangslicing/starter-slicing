@@ -1,7 +1,7 @@
-$(window).load(function() {
+$(window).load(function () {
   'use strict';
-});
+})
 
-$(function(){
+$(function () {
   'use strict';
-});
+})
