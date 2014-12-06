@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === 'production') {
 
 var Server = new statics.Server('./', options);
 
-var port = 4041;
+var port = process.env.PORT || 3000;
 
 require('http').createServer(function (request, response) {
 
