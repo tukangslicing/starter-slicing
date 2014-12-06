@@ -21,10 +21,9 @@ var port = 4041;
 require('http').createServer(function (request, response) {
 
 	request.addListener('end', function () {
-
   	Server.serve(request, response,function (e, res) {
       if (e && (e.status === 404)) {
-         Server.serveFile('/404.html', 404, {}, request, response);
+         Server.serveFile('404.html', 404, {}, request, response);
       }
     });
   }).resume();
