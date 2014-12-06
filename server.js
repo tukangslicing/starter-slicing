@@ -8,13 +8,13 @@ var options = {
 	headers: {
 		'X-Creator':'Follow @hengkiardo'
 	}
+}
 
-if(process.env.NODE_ENV === production) {
+if (process.env.NODE_ENV === 'production') {
 	options.gzip = true
 }
 
-var Server = new statics.Server('./', options
-});
+var Server = new statics.Server('./', options);
 
 var port = 4041;
 

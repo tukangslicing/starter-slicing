@@ -254,6 +254,8 @@ module.exports = function (grunt) {
         'less:compileWeb'
       ],
       js: [
+        'jscs',
+        'jshint',
         'concat'
       ],
       options: {
@@ -279,7 +281,10 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('compress-image', ['imagemin']);
-  grunt.registerTask('dev', ['less', 'concat', 'autoprefixer']);
+  grunt.registerTask('dev', ['concurrent:less', 'concurrent:js', 'autoprefixer']);
   grunt.registerTask('default', ['dev', 'notify:first', 'watch']);
   grunt.registerTask('production', ['clean:build', 'compress-image', 'less', 'concat', 'autoprefixer', 'csscomb', 'cssmin', 'uglify']);
+  grunt.registerTask('heroku', 'dev');
+  grunt.registerTask('heroku:development', 'dev');
+  grunt.registerTask('heroku:production', 'dev');
 };
