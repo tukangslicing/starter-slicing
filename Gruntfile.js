@@ -69,7 +69,7 @@ module.exports = function (grunt) {
           'js/shared/*.js',
           'js/web/*.js'
         ],
-        dest: 'js/web.js'
+        dest: 'js/<%= pkg.name.toLowerCase() %>.js'
       },
       plugins: {
         src: [
@@ -101,7 +101,7 @@ module.exports = function (grunt) {
         src: ['js/shared/*.js', 'js/web/*.js']
       },
       afterConcat: {
-        src: ['js/web.js']
+        src: ['js/<%= pkg.name.toLowerCase() %>.js']
       }
     },
 
