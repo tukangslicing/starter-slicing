@@ -11,34 +11,41 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
+    dir: {
+      less : 'app/less',
+      css : 'app/css',
+      js  : 'app/js',
+      bootstrap: 'app/js/bootstrap'
+    },
     watch: {
-      less: {
-        files: 'less/**/*',
-        tasks: ['newer:less', 'notify:less']
-      },
-      js: {
-        files: ['Gruntfile.js','js/**/*.js'],
-        tasks: ['jscs', 'jshint', 'newer:concat', 'notify:js']
+      all: {
+        files: [
+          'Gruntfile.js',
+          '<%= dir.js %>/*.js',
+          '<%= dir.js %>/**/*.js',
+          '<%= dir.less %>/*.less',
+          '<%= dir.less %>/**/*.less'
+        ],
+        tasks: [
+          'newer:less',
+          'jscs:bootstrap',
+          'jscs:main',
+          'jscs:grunt',
+          'jshint',
+          'newer:concat',
+          'notify:watch'
+        ],
+        options: {
+          nospawn: true
+        }
       }
     },
 
     notify: {
-      first: {
+      watch: {
         options: {
           title: '<%= pkg.name %>',
-          message: 'Assets is finish compiled.'
-        }
-      },
-      less: {
-        options: {
-          title: '<%= pkg.name %>',
-          message: 'LESS finish compiling to CSS.'
-        }
-      },
-      js: {
-        options: {
-          title: '<%= pkg.name %>',
-          message: 'JS is finish concated'
+          message: 'CSS and JS finished compiling.'
         }
       }
     },
@@ -49,46 +56,46 @@ module.exports = function (grunt) {
       },
       bootstrap: {
         src: [
-          'js/bootstrap/transition.js',
-          'js/bootstrap/alert.js',
-          'js/bootstrap/button.js',
-          'js/bootstrap/carousel.js',
-          'js/bootstrap/collapse.js',
-          'js/bootstrap/dropdown.js',
-          'js/bootstrap/modal.js',
-          'js/bootstrap/tooltip.js',
-          'js/bootstrap/popover.js',
-          'js/bootstrap/scrollspy.js',
-          'js/bootstrap/tab.js',
-          'js/bootstrap/affix.js'
+          '<%= dir.bootstrap %>/transition.js',
+          '<%= dir.bootstrap %>/alert.js',
+          '<%= dir.bootstrap %>/button.js',
+          '<%= dir.bootstrap %>/carousel.js',
+          '<%= dir.bootstrap %>/collapse.js',
+          '<%= dir.bootstrap %>/dropdown.js',
+          '<%= dir.bootstrap %>/modal.js',
+          '<%= dir.bootstrap %>/tooltip.js',
+          '<%= dir.bootstrap %>/popover.js',
+          '<%= dir.bootstrap %>/scrollspy.js',
+          '<%= dir.bootstrap %>/tab.js',
+          '<%= dir.bootstrap %>/affix.js'
         ],
-        dest: 'js/bootstrap.js'
+        dest: '<%= dir.js %>/bootstrap.js'
       },
       main: {
         src: [
-          'js/shared/*.js',
-          'js/web/*.js'
+          '<%= dir.js %>/shared/*.js',
+          '<%= dir.js %>/web/*.js'
         ],
-        dest: 'js/<%= pkg.name.toLowerCase() %>.js'
+        dest: '<%= dir.js %>/<%= pkg.name.toLowerCase() %>.js'
       },
       plugins: {
         src: [
-          'js/plugins/*.js'
+          '<%= dir.js %>/plugins/*.js'
         ],
-        dest: 'js/plugins.js'
+        dest: '<%= dir.js %>/plugins.js'
       }
     },
 
     jshint: {
       options: {
-        jshintrc: 'js/.jshintrc',
+        jshintrc: '<%= dir.js %>/.jshintrc',
         reporter: require('jshint-stylish')
       },
       core: {
         options: {
-          jshintrc: 'js/bootstrap/.jshintrc'
+          jshintrc: '<%= dir.bootstrap %>/.jshintrc'
         },
-        src: 'js/bootstrap/*.js'
+        src: '<%= dir.bootstrap %>/*.js'
       },
       grunt: {
         options: {
@@ -97,23 +104,23 @@ module.exports = function (grunt) {
         src:'Gruntfile.js'
       },
       main: {
-        jshintrc: 'public/js/.jshintrc',
-        src: ['js/shared/*.js', 'js/web/*.js']
+        jshintrc: '<%= dir.js %>/.jshintrc',
+        src: ['<%= dir.js %>/shared/*.js', '<%= dir.js %>/web/*.js']
       },
       afterConcat: {
-        src: ['js/<%= pkg.name.toLowerCase() %>.js']
+        src: ['<%= dir.js %>/<%= pkg.name.toLowerCase() %>.js']
       }
     },
 
     jscs: {
       options: {
-        config: 'js/bootstrap/.jscsrc'
+        config: '<%= dir.bootstrap %>/.jscsrc'
       },
       bootstrap: {
-        src: 'js/bootstrap/*.js'
+        src: '<%= dir.bootstrap %>/*.js'
       },
       main: {
-        src: ['js/shared/*.js', 'js/web/*.js']
+        src: ['<%= dir.js %>/shared/*.js', '<%= dir.js %>/web/*.js']
       },
       grunt: {
         src: 'Gruntfile.js'
@@ -127,7 +134,7 @@ module.exports = function (grunt) {
       },
       frontend: {
         files: {
-          'js/<%= pkg.name.toLowerCase() %>.min.js': ['js/bootstrap.js', 'js/plugins.js', 'js/<%= pkg.name.toLowerCase() %>.js']
+          '<%= dir.js %>/<%= pkg.name.toLowerCase() %>.min.js': ['<%= dir.js %>/bootstrap.js', '<%= dir.js %>/plugins.js', '<%= dir.js %>/<%= pkg.name.toLowerCase() %>.js']
         }
       }
     },
@@ -139,10 +146,10 @@ module.exports = function (grunt) {
           sourceMap: true,
           outputSourceFiles: true,
           sourceMapURL: 'bootstrap.css.map',
-          sourceMapFilename: 'css/bootstrap.css.map'
+          sourceMapFilename: '<%= dir.css %>/bootstrap.css.map'
         },
         files: {
-          'css/bootstrap.css': 'less/bootstrap/bootstrap.less'
+          '<%= dir.css %>/bootstrap.css': '<%= dir.less %>/bootstrap/bootstrap.less'
         }
       },
       compileWeb: {
@@ -151,10 +158,10 @@ module.exports = function (grunt) {
           sourceMap: true,
           outputSourceFiles: true,
           sourceMapURL: '<%= pkg.name.toLowerCase() %>.css.map',
-          sourceMapFilename: 'css/<%= pkg.name.toLowerCase() %>.css.map'
+          sourceMapFilename: '<%= dir.css %>/<%= pkg.name.toLowerCase() %>.css.map'
         },
         files: {
-          'css/<%= pkg.name.toLowerCase() %>.css': 'less/apps.less'
+          '<%= dir.css %>/<%= pkg.name.toLowerCase() %>.css': '<%= dir.less %>/apps.less'
         }
       }
     },
@@ -176,13 +183,13 @@ module.exports = function (grunt) {
         options: {
           map: true
         },
-        src: 'css/bootstrap.css'
+        src: '<%= dir.css %>/bootstrap.css'
       },
       web: {
         options: {
           map: true
         },
-        src: 'css/<%= pkg.name.toLowerCase() %>.css'
+        src: '<%= dir.css %>/<%= pkg.name.toLowerCase() %>.css'
       }
     },
 
@@ -194,24 +201,49 @@ module.exports = function (grunt) {
       },
       core: {
         files: {
-          'css/<%= pkg.name.toLowerCase() %>.css': 'css/<%= pkg.name.toLowerCase() %>.css',
-          'css/bootstrap.css': 'css/bootstrap.css'
+          '<%= dir.css %>/<%= pkg.name.toLowerCase() %>.css': '<%= dir.css %>/<%= pkg.name.toLowerCase() %>.css',
+          '<%= dir.css %>/bootstrap.css': '<%= dir.css %>/bootstrap.css'
         }
       }
     },
 
     csscomb: {
       options: {
-        config: 'less/bootstrap/.csscomb.json'
+        config: '<%= dir.less %>/bootstrap/.csscomb.json'
       },
       dist: {
         expand: true,
-        cwd: 'css/',
+        cwd: '<%= dir.css %>/',
         src: ['*.css', '!*.min.css'],
-        dest: 'css/'
+        dest: '<%= dir.css %>/'
       }
     },
 
+    concurrent: {
+      less: [
+        'less:compileCore',
+        'less:compileWeb'
+      ],
+      js: [
+        'jscs',
+        'jshint',
+        'concat'
+      ],
+      options: {
+        // logConcurrentOutput: true
+      }
+    },
+
+    imagemin: {                          // Task
+      dynamic: {                         // Another target
+        files: [{
+          expand: true,                  // Enable dynamic expansion
+          cwd: 'app/img/',                   // Src matches are relative to this path
+          src: ['**/*.{png,jpg,gif}'],   // Actual patterns to match
+          dest: 'app/img/'                  // Destination path prefix
+        }]
+      }
+    },
     newer: {
       options: {
         /**
@@ -254,6 +286,7 @@ module.exports = function (grunt) {
                   });
                 });
               }
+
               checkNextImport();
             });
           });
@@ -269,41 +302,14 @@ module.exports = function (grunt) {
         }
       }
     },
-
-    concurrent: {
-      less: [
-        'less:compileCore',
-        'less:compileWeb'
-      ],
-      js: [
-        'jscs',
-        'jshint',
-        'concat'
-      ],
-      options: {
-        // logConcurrentOutput: true
-      }
-    },
-
-    imagemin: {                          // Task
-      dynamic: {                         // Another target
-        files: [{
-          expand: true,                  // Enable dynamic expansion
-          cwd: 'img/',                   // Src matches are relative to this path
-          src: ['**/*.{png,jpg,gif}'],   // Actual patterns to match
-          dest: 'img/'                  // Destination path prefix
-        }]
-      }
-    },
-
     clean: {
-      dev: ['js/plugins.js', 'js/<%= pkg.name.toLowerCase() %>.js', 'css/*.css', 'css/*.css.map'],
+      dev: ['<%= dir.js %>/plugins.js', '<%= dir.js %>/<%= pkg.name.toLowerCase() %>.js', '<%= dir.css %>/*.css', '<%= dir.css %>/*.css.map'],
       build: ['build/*']
     }
   });
 
   grunt.registerTask('compress-image', ['imagemin']);
-  grunt.registerTask('dev', ['concurrent:less', 'concurrent:js', 'notify:first', 'autoprefixer','csscomb','cssmin']);
+  grunt.registerTask('dev', ['concurrent:less', 'concurrent:js', 'notify', 'autoprefixer','csscomb','cssmin']);
   grunt.registerTask('default', ['dev', 'watch']);
   grunt.registerTask('production', ['clean:build', 'compress-image', 'less', 'concat', 'autoprefixer', 'csscomb', 'cssmin', 'uglify']);
   grunt.registerTask('heroku', 'dev');
