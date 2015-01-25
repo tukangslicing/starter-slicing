@@ -15,18 +15,22 @@ module.exports = function (grunt) {
       less : 'app/less',
       css : 'app/css',
       js  : 'app/js',
+      jade : 'app/jade',
       bootstrap: 'app/js/bootstrap'
     },
     watch: {
       all: {
         files: [
           'Gruntfile.js',
+          '<%= dir.jade %>/**/*.jade',
+          '<%= dir.jade %>/*.jade',
           '<%= dir.js %>/*.js',
           '<%= dir.js %>/**/*.js',
           '<%= dir.less %>/*.less',
           '<%= dir.less %>/**/*.less'
         ],
         tasks: [
+          'newer:jade',
           'newer:less',
           'jscs:bootstrap',
           'jscs:main',
@@ -322,9 +326,9 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('compress-image', ['imagemin']);
-  grunt.registerTask('dev', ['concurrent:less', 'concurrent:js', 'notify', 'autoprefixer','csscomb','cssmin']);
+  grunt.registerTask('dev', ['concurrent:less', 'jade', 'concurrent:js', 'notify', 'autoprefixer','csscomb','cssmin']);
   grunt.registerTask('default', ['dev', 'watch']);
-  grunt.registerTask('production', ['clean:build', 'compress-image', 'less', 'concat', 'autoprefixer', 'csscomb', 'cssmin', 'uglify']);
+  grunt.registerTask('production', ['clean:build', 'compress-image', 'jade', 'less', 'concat', 'autoprefixer', 'csscomb', 'cssmin', 'uglify']);
   grunt.registerTask('heroku', 'dev');
   grunt.registerTask('heroku:development', 'dev');
   grunt.registerTask('heroku:production', 'dev');
