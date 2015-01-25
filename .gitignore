@@ -61,3 +61,4 @@ js/web.js
 js/bootstrap.js
 js/plugins.js
 js/ts-starter.js
+*.html

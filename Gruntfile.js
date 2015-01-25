@@ -41,6 +41,18 @@ module.exports = function (grunt) {
       }
     },
 
+    jade: {
+      html: {
+        files: {
+          'app/': ['app/jade/*.jade']
+        },
+        options: {
+          pretty: true,
+          client: false
+        }
+      }
+    },
+
     notify: {
       watch: {
         options: {
@@ -244,6 +256,7 @@ module.exports = function (grunt) {
         }]
       }
     },
+
     newer: {
       options: {
         /**

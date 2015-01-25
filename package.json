@@ -28,6 +28,7 @@
     "grunt-contrib-uglify": "latest",
     "grunt-contrib-watch": "latest",
     "grunt-csscomb": "latest",
+    "grunt-jade": "^0.5.1",
     "grunt-jscs": "^1.2.0",
     "grunt-newer": "^1.1.0",
     "grunt-notify": "^0.4.1",
