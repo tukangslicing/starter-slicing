@@ -14,9 +14,12 @@ module.exports = function (grunt) {
     dir: {
       less : 'app/less',
       css : 'app/css',
-      js  : 'app/js',
+      javascript  : 'app/javascript',
+      js : 'app/js',
       jade : 'app/jade',
-      bootstrap: 'app/js/bootstrap'
+      bootstrap: 'app/javascript/bootstrap',
+      mobilejade: 'app/jade-mobile',
+      mobile: 'app/mobile'
     },
     watch: {
       all: {
@@ -24,13 +27,13 @@ module.exports = function (grunt) {
           'Gruntfile.js',
           '<%= dir.jade %>/**/*.jade',
           '<%= dir.jade %>/*.jade',
-          '<%= dir.js %>/*.js',
-          '<%= dir.js %>/**/*.js',
+          '<%= dir.javascript %>/*.js',
+          '<%= dir.javascript %>/**/*.js',
           '<%= dir.less %>/*.less',
           '<%= dir.less %>/**/*.less'
         ],
         tasks: [
-          'newer:jade',
+          'jade',
           'newer:less',
           'jscs:bootstrap',
           'jscs:main',
@@ -52,7 +55,10 @@ module.exports = function (grunt) {
         },
         options: {
           pretty: true,
-          client: false
+          client: false,
+          locals: {
+            mainJs : '<%= pkg.name %>'
+          }
         }
       }
     },
@@ -72,31 +78,30 @@ module.exports = function (grunt) {
       },
       bootstrap: {
         src: [
-          '<%= dir.bootstrap %>/transition.js',
+          // '<%= dir.bootstrap %>/transition.js',
           '<%= dir.bootstrap %>/alert.js',
           '<%= dir.bootstrap %>/button.js',
-          '<%= dir.bootstrap %>/carousel.js',
+          // '<%= dir.bootstrap %>/carousel.js',
           '<%= dir.bootstrap %>/collapse.js',
           '<%= dir.bootstrap %>/dropdown.js',
           '<%= dir.bootstrap %>/modal.js',
           '<%= dir.bootstrap %>/tooltip.js',
-          '<%= dir.bootstrap %>/popover.js',
-          '<%= dir.bootstrap %>/scrollspy.js',
-          '<%= dir.bootstrap %>/tab.js',
-          '<%= dir.bootstrap %>/affix.js'
+          '<%= dir.bootstrap %>/popover.js'
+          // '<%= dir.bootstrap %>/scrollspy.js',
+          // '<%= dir.bootstrap %>/tab.js',
+          // '<%= dir.bootstrap %>/affix.js'
         ],
         dest: '<%= dir.js %>/bootstrap.js'
       },
       main: {
         src: [
-          '<%= dir.js %>/shared/*.js',
-          '<%= dir.js %>/web/*.js'
+          '<%= dir.javascript %>/web/*.js'
         ],
         dest: '<%= dir.js %>/<%= pkg.name.toLowerCase() %>.js'
       },
       plugins: {
         src: [
-          '<%= dir.js %>/plugins/*.js'
+          '<%= dir.javascript %>/plugins/*.js'
         ],
         dest: '<%= dir.js %>/plugins.js'
       }
@@ -104,7 +109,7 @@ module.exports = function (grunt) {
 
     jshint: {
       options: {
-        jshintrc: '<%= dir.js %>/.jshintrc',
+        jshintrc: '<%= dir.javascript %>/.jshintrc',
         reporter: require('jshint-stylish')
       },
       core: {
@@ -122,9 +127,6 @@ module.exports = function (grunt) {
       main: {
         jshintrc: '<%= dir.js %>/.jshintrc',
         src: ['<%= dir.js %>/shared/*.js', '<%= dir.js %>/web/*.js']
-      },
-      afterConcat: {
-        src: ['<%= dir.js %>/<%= pkg.name.toLowerCase() %>.js']
       }
     },
 
@@ -136,7 +138,7 @@ module.exports = function (grunt) {
         src: '<%= dir.bootstrap %>/*.js'
       },
       main: {
-        src: ['<%= dir.js %>/shared/*.js', '<%= dir.js %>/web/*.js']
+        src: ['<%= dir.javascript %>/shared/*.js', '<%= dir.javascript %>/web/*.js']
       },
       grunt: {
         src: 'Gruntfile.js'
@@ -145,12 +147,26 @@ module.exports = function (grunt) {
 
     uglify: {
       options: {
-        report: 'min',
-        preserveComments: 'some'
+        compress: {
+          warnings: false
+        },
+        mangle: true,
+        preserveComments: 'false',
+        report: 'min'
       },
       frontend: {
         files: {
-          '<%= dir.js %>/<%= pkg.name.toLowerCase() %>.min.js': ['<%= dir.js %>/bootstrap.js', '<%= dir.js %>/plugins.js', '<%= dir.js %>/<%= pkg.name.toLowerCase() %>.js']
+          '<%= dir.js %>/<%= pkg.name.toLowerCase() %>.js': ['<%= dir.javascript %>/<%= pkg.name.toLowerCase() %>.js']
+        }
+      },
+      bootstrap: {
+        files: {
+          '<%= dir.js %>/bootstrap.js': ['<%= dir.javascript %>/bootstrap.js']
+        }
+      },
+      plugins: {
+        files: {
+          '<%= dir.js %>/plugins.js': ['<%= dir.javascript %>/plugins.js']
         }
       }
     },
@@ -170,7 +186,7 @@ module.exports = function (grunt) {
       },
       compileWeb: {
         options: {
-          strictMath: true,
+          // strictMath: true,
           sourceMap: true,
           outputSourceFiles: true,
           sourceMapURL: '<%= pkg.name.toLowerCase() %>.css.map',
@@ -227,7 +243,7 @@ module.exports = function (grunt) {
       options: {
         config: '<%= dir.less %>/bootstrap/.csscomb.json'
       },
-      dist: {
+      web: {
         expand: true,
         cwd: '<%= dir.css %>/',
         src: ['*.css', '!*.min.css'],
@@ -241,12 +257,12 @@ module.exports = function (grunt) {
         'less:compileWeb'
       ],
       js: [
-        'jscs',
-        'jshint',
-        'concat'
+        'concat:plugins',
+        'concat:main',
+        'concat:bootstrap'
       ],
       options: {
-        // logConcurrentOutput: true
+        logConcurrentOutput: false
       }
     },
 
@@ -320,16 +336,54 @@ module.exports = function (grunt) {
       }
     },
     clean: {
-      dev: ['<%= dir.js %>/plugins.js', '<%= dir.js %>/<%= pkg.name.toLowerCase() %>.js', '<%= dir.css %>/*.css', '<%= dir.css %>/*.css.map'],
+      dev: [
+        'app/*.html',
+        '<%= dir.js %>/*.js',
+        '<%= dir.css %>/*'
+      ],
       build: ['build/*']
+    },
+    htmlmin: {
+      dist: {
+        options: {
+          removeComments: true,
+          collapseWhitespace: true
+        },
+        files: {
+          'app/index.html': 'app/index.html'
+        }
+      }
     }
   });
 
   grunt.registerTask('compress-image', ['imagemin']);
-  grunt.registerTask('dev', ['concurrent:less', 'jade', 'concurrent:js', 'notify', 'autoprefixer','csscomb','cssmin']);
+  grunt.registerTask('dev', [
+    'clean',
+    'concurrent:less',
+    'jade',
+    'concurrent:js',
+    'jscs:main',
+    'jscs:grunt',
+    'jshint',
+    'notify',
+    'autoprefixer'
+  ]);
   grunt.registerTask('default', ['dev', 'watch']);
-  grunt.registerTask('production', ['clean:build', 'compress-image', 'jade', 'less', 'concat', 'autoprefixer', 'csscomb', 'cssmin', 'uglify']);
-  grunt.registerTask('heroku', 'dev');
+  grunt.registerTask('production', [
+    'clean',
+    'concurrent:less',
+    'jade',
+    'concurrent:js',
+    'jscs:main',
+    'jscs:grunt',
+    'autoprefixer',
+    'csscomb',
+    'cssmin',
+    'uglify',
+    'compress-image',
+    'htmlmin'
+  ]);
+  grunt.registerTask('heroku', 'production');
   grunt.registerTask('heroku:development', 'dev');
-  grunt.registerTask('heroku:production', 'dev');
+  grunt.registerTask('heroku:production', 'production');
 };

@@ -1,13 +1,16 @@
 {
-  "name": "TS-Starter",
-  "jsfile": "main",
-  "version": "1.0.0",
+  "name": "ts-starter",
+  "jsfile": "server.js",
+  "version": "1.0.1",
   "private": true,
-  "author": "Tukangslicing.com",
+  "author": "@hengkiardo",
   "engines": {
-    "node": "~0.10.x"
+    "node": "4.2.1"
   },
   "main": "server.js",
+  "scripts": {
+    "start": "./node_modules/node-static/bin/cli.js app -p 4001"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:tukangslicing/starter-slicing.git"
@@ -16,27 +19,27 @@
     "url": "https://github.com/tukangslicing/starter-slicing/issues"
   },
   "dependencies": {
-    "async": "^0.9.0",
+    "async": "^1.5.2",
     "grunt": "latest",
     "grunt-autoprefixer": "latest",
     "grunt-concurrent": "latest",
     "grunt-contrib-clean": "latest",
     "grunt-contrib-concat": "latest",
     "grunt-contrib-cssmin": "latest",
-    "grunt-contrib-imagemin": "^0.9.4",
+    "grunt-contrib-htmlmin": "^0.6.0",
+    "grunt-contrib-imagemin": "latest",
     "grunt-contrib-jshint": "latest",
     "grunt-contrib-less": "latest",
     "grunt-contrib-uglify": "latest",
     "grunt-contrib-watch": "latest",
     "grunt-csscomb": "latest",
     "grunt-jade": "^0.5.1",
-    "grunt-jscs": "^1.6.0",
+    "grunt-jscs": "^2.6.0",
     "grunt-newer": "^1.1.0",
     "grunt-notify": "^0.4.1",
     "jit-grunt": "^0.9.*",
-    "jshint-stylish": "^1.0.*",
-    "node-static": "^0.7.6",
-    "open": "0.0.5",
-    "time-grunt": "latest"
+    "jshint-stylish": "^2.1.*",
+    "lodash": "^3.10.1",
+    "node-static": "^0.7.7"
   }
 }
